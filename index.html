@@ -7,98 +7,10 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <!-- Custom Styles -->
-    <style>
-        body {
-            background-color: #f4f6f9;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .chat-container {
-            max-width: 600px;
-            margin: 0 auto;
-            height: 80vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: white;
-            padding: 15px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-
-        .chat-body {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background-color: #ffffff;
-        }
-
-        .message {
-            margin-bottom: 15px;
-            max-width: 85%;
-            padding: 10px 15px;
-            border-radius: 12px;
-            position: relative;
-        }
-
-        .message.user {
-            background-color: #e6f2ff;
-            align-self: flex-end;
-            border-bottom-right-radius: 0;
-        }
-
-        .message.bot {
-            background-color: #f1f5f9;
-            align-self: flex-start;
-            border-bottom-left-radius: 0;
-        }
-
-        .input-area {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .suggested-questions .btn {
-            margin: 5px;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-        }
-
-        .suggested-questions .btn:hover {
-            opacity: 1;
-        }
-
-        .related-questions {
-            margin-top: 10px;
-        }
-
-        .related-questions .list-group-item {
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .related-questions .list-group-item:hover {
-            background-color: #f8f9fa;
-        }
-
-        .feedback-btn {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            transition: transform 0.2s ease;
-        }
-
-        .feedback-btn:hover {
-            transform: scale(1.2);
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
     <div class="container-fluid vh-100 d-flex align-items-center justify-content-center">
@@ -110,7 +22,6 @@
             </div>
 
             <div id="chat-body" class="chat-body d-flex flex-column">
-                <!-- Messages will be dynamically added here -->
                 <div class="message bot mb-3">
                     Hi there! I'm your College Chatbot Assistant. How can I help you today?
                 </div>
@@ -120,7 +31,7 @@
                 <div class="suggested-questions mb-3 text-center">
                     <button class="btn btn-outline-primary btn-sm">Admission Requirements</button>
                     <button class="btn btn-outline-primary btn-sm">Application Deadline</button>
-                    <button class="btn btn-outline-primary btn-sm">how internship after 1st year</button>
+                    <button class="btn btn-outline-primary btn-sm">How to get an internship after 1st year</button>
                 </div>
 
                 <div class="input-group">
@@ -141,172 +52,32 @@
         </div>
     </div>
 
+    <!-- Report Issue Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">Report an Issue</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="report-form">
+                        <div class="mb-3">
+                            <label for="report-description" class="form-label">Describe the issue:</label>
+                            <textarea id="report-description" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Report</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-
-    <script>
-        $(document).ready(function () {
-            const $chatBody = $('#chat-body');
-            const $userInput = $('#user-input');
-            const $submitBtn = $('#submit-btn');
-            const $suggestedQuestions = $('.suggested-questions .btn');
-
-            // Function to add a message to the chat
-            function addMessage(message, type) {
-                const messageElement = $(`
-                    <div class="message ${type} d-flex">
-                        ${message}
-                    </div>
-                `);
-                $chatBody.append(messageElement);
-                scrollToBottom();
-            }
-
-            // Scroll to bottom of chat
-            function scrollToBottom() {
-                $chatBody.scrollTop($chatBody[0].scrollHeight);
-            }
-
-            // Submit question
-            function submitQuestion(query) {
-                // Clear input
-                $userInput.val('');
-
-                // Add user message
-                addMessage(query, 'user');
-
-                // Simulate bot response (replace with actual API call)
-                addMessage('Searching for an answer...', 'bot');
-
-                // Simulated response logic
-                $.ajax({
-                    url: '/ask',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ user_query: query }),
-                    success: function(response) {
-                        // Replace last bot message with actual response
-                        $chatBody.find('.message.bot:last')
-                            .html(`
-                                <div class="w-100">
-                                    <strong>Answer:</strong> ${response.answer}
-                                    <div class="mt-2 d-flex align-items-center">
-                                        <span class="me-2">Was this helpful?</span>
-                                        <button class="feedback-btn text-success me-2" data-feedback="up">
-                                            <i class="bi bi-hand-thumbs-up"></i>
-                                        </button>
-                                        <button class="feedback-btn text-danger" data-feedback="down">
-                                            <i class="bi bi-hand-thumbs-down"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            `);
-
-                        // Related questions
-                        if (response.similar_questions && response.similar_questions.length) {
-                            const relatedQuestionsHtml = response.similar_questions
-                                .filter(q => q.cosine_distance > 0)
-                                .sort((a, b) => a.cosine_distance - b.cosine_distance)
-                                .slice(0, 3)
-                                .map(q => `
-                                    <li class="list-group-item list-group-item-action related-question" data-question="${q.question}">
-                                        ${q.question}
-                                    </li>
-                                `)
-                                .join('');
-
-                            if (relatedQuestionsHtml) {
-                                addMessage(`
-                                    <div class="w-100">
-                                        <strong>Related Questions:</strong>
-                                        <ul class="list-group related-questions mt-2">
-                                            ${relatedQuestionsHtml}
-                                        </ul>
-                                    </div>
-                                `, 'bot');
-                            }
-                        }
-
-                        scrollToBottom();
-                    },
-                    error: function(xhr) {
-                        $chatBody.find('.message.bot:last')
-                            .html(`
-                                <span class="text-danger">
-                                    <i class="bi bi-exclamation-triangle me-2"></i>
-                                    ${xhr.responseJSON.error || 'An unexpected error occurred.'}
-                                </span>
-                            `);
-                    }
-                });
-            }
-
-            // Submit button click handler
-            $submitBtn.on('click', function() {
-                const query = $userInput.val().trim();
-                if (query) {
-                    submitQuestion(query);
-                }
-            });
-
-            // Enter key handler
-            $userInput.on('keypress', function(e) {
-                if (e.which === 13) {
-                    const query = $(this).val().trim();
-                    if (query) {
-                        submitQuestion(query);
-                    }
-                }
-            });
-
-            // Suggested questions handler
-            $suggestedQuestions.on('click', function() {
-                const question = $(this).text();
-                $userInput.val(question);
-                submitQuestion(question);
-            });
-
-            // Related questions handler
-            $chatBody.on('click', '.related-question', function() {
-                const question = $(this).data('question');
-                $userInput.val(question);
-                submitQuestion(question);
-            });
-
-            // Feedback handler
-            $chatBody.on('click', '.feedback-btn', function() {
-                const feedback = $(this).data('feedback');
-                const $feedbackContainer = $(this).closest('.mt-2');
-
-                // Disable buttons and show thank you
-                $feedbackContainer.html(`
-                    <span class="text-muted">
-                        <i class="bi bi-check-circle me-2"></i>
-                        Thank you for your feedback!
-                    </span>
-                `);
-
-                // Send feedback to server
-                $.ajax({
-                    url: '/feedback',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ query: $chatBody.find('.message.user:last').text(), feedback }),
-                    success: () => {
-                        console.log('Feedback submitted successfully.');
-                    },
-                    error: () => {
-                        console.error('Failed to submit feedback.');
-                    }
-                });
-            });
-        });
-    </script>
+    <!-- Custom Script -->
+    <script src="script.js"></script>
 </body>
 </html>

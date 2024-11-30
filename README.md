@@ -86,9 +86,8 @@ python3 app.py(if windows python app.py)
 
 
 
-## Contact
-
-Your Name - Saurabh_Agrahari (saurabhagrahariiitjee2022@gmail.com)
+## Contributers:
+Saurabh Agrahari,Pankag Rishi,Anshu Singh,Rijwith 
 
 
 ## Acknowledgements

@@ -69,7 +69,7 @@ This project is a **College Chatbot** that leverages **Machine Learning**, **Nat
 ## Running the Application
 
 ```bash
-flask run
+python3 app.py(if windows python app.py)
 ```
 
 ## API Endpoints

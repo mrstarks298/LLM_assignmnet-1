@@ -1,3 +1,4 @@
+
 import os
 import numpy as np
 import pandas as pd
@@ -43,6 +44,7 @@ class CollegeChatbot:
         except Exception as e:
             print(f"Error generating embedding: {e}")
             raise
+#it will search answer in dataabse which has been created by the code which will be in notebook in repo.
 
     def find_similar_questions(self, query_embedding):
         """Retrieve the most similar questions from the database."""
@@ -128,19 +130,19 @@ class CollegeChatbot:
         except Exception as e:
             print(f"Error getting answer: {e}")
             return {'answer': f"An error occurred: {e}"}
-# Example usage
+#eaxple like 
 if __name__ == "__main__":
     # Setup database connection parameters
     db_params = {
         'host': 'localhost',
         'database': 'postgres',
         'user': 'postgres',
-        'password': "Saurabh_Agrahari",
+        'password': "your password ",
         'port': '5432'
     }
 
     # Set up Groq API key (or set as environment variable)
-    groq_api_key = "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"
+    groq_api_key = "your GRoq API"
 
     # Initialize chatbot instance
     chatbot = CollegeChatbot(db_params, groq_api_key)

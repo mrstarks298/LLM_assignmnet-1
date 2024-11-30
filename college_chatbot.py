@@ -82,10 +82,25 @@ class CollegeChatbot:
             return chat_completion.choices[0].message.content
         except Exception as e:
             return f"Error enhancing response with Groq: {e}"
+    
+    def handle_greeting(self, user_query):
+        """Respond to greetings like 'hey', 'hello', etc."""
+        greetings = ['hey', 'hello', 'hi',  'good morning', 'good evening']
+        # Convert the user query to lowercase and check if it contains any greeting words
+        user_query_lower = user_query.lower()
+        for greeting in greetings:
+            if greeting in user_query_lower:
+                return "Hey! What do you want to know about Sitare University?"
+        return None
 
     def get_answer(self, user_query, similarity_threshold=0.7):
         """Get the answer to a user's query."""
         try:
+            # Check if the user is greeting the bot
+            greeting_response = self.handle_greeting(user_query)
+            if greeting_response:
+                return {'answer': greeting_response}
+
             query_embedding = self.embed_query(user_query)
             similar_questions = self.find_similar_questions(query_embedding)
             
@@ -113,7 +128,6 @@ class CollegeChatbot:
         except Exception as e:
             print(f"Error getting answer: {e}")
             return {'answer': f"An error occurred: {e}"}
-
 # Example usage
 if __name__ == "__main__":
     # Setup database connection parameters
